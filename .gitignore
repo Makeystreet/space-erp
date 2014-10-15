@@ -1,0 +1,17 @@
+# Python bytecode:
+*.py[co]
+
+# Packaging files:
+*.egg*
+
+# Editor temp files:
+*.swp
+*~
+
+.DS_Store
+
+.settings/*
+
+#Sublimetext metadata
+*.sublime-project
+*.sublime-workspace
