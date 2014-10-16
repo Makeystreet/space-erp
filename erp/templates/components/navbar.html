@@ -13,20 +13,11 @@
     <!-- /.navbar-header -->
 
     <ul class="nav navbar-top-links navbar-right">
-        <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-user">
-                {% if user.is_authenticated %}
-                <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
-                {% else %}
-                <li><a href="{% url 'login' %}"><i class="fa fa-sign-in fa-fw"></i> Login</a></li>
-                {% endif %}
-            </ul>
-            <!-- /.dropdown-user -->
-        </li>
-        <!-- /.dropdown -->
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}"><i class="fa fa-sign-in fa-fw"></i> Login</a></li>
+        {% endif %}
     </ul>
     <!-- /.navbar-top-links -->
 
