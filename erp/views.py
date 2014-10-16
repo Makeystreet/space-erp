@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from models import Space, Part, Inventory
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 import json
+
 
 def get_user_details_json(request):
     login = request.user.is_authenticated()
@@ -17,11 +19,12 @@ def get_user_details_json(request):
 
     return user_details
 
+
 def space_page(request):
     user_details = get_user_details_json(request)
-
     space = Space.objects.get(pk=1)
     is_space_admin = False
+
     if space:
         space.no_admins = space.admins.count()
         space.no_members = space.members.count()
