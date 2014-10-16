@@ -116,25 +116,19 @@
             <div class="table-responsive block" style="padding-bottom: 20px" id="inventory-wrapper">
                 {% if is_space_admin %}
                 <div class="block-title"><h4>Edit Inventory</h4></div>
-                <div id="add-inventory">
+                <div id="add-inventory" class="well">
                     <div class="form-group" id="new_part_form">
-                        <span class="col-md-4">
-                        </span>
-                        <span class="col-md-8">
-                            <hr align="center" color="#000000" size="2" width="70%">
-                            <p><strong>Add new part</strong></p>
-                        </span>
                         <label class="col-md-4 control-label" for="val_part_name">Part Name<span class="text-danger">*</span></label>
                         <div class="col-md-8">
                             <input type="text" id="val_part_name_v2" name="val_part_name_v2" class="form-control" placeholder="Enter Part Name" required="">
                         </div>
-                        <label class="col-md-4 control-label" for="val_part_url_v2">Part URL<span class="text-danger">*</span></label>
-                        <div class="col-md-8">
-                            <input type="url" id="val_part_url_v2" name="val_part_url_v2" class="form-control" placeholder="http://example.com" required="">
-                        </div>
                         <label class="col-md-4 control-label" for="val_part_url_v2">Quantity<span class="text-danger"></span></label>
                         <div class="col-md-8">
                             <input type="number" id="val_part_quant_v2" name="val_part_url_v2" class="form-control" min="1" value="1">
+                        </div>
+                        <label class="col-md-4 control-label" for="val_part_url_v2">Part URL</label>
+                        <div class="col-md-8">
+                            <input type="url" id="val_part_url_v2" name="val_part_url_v2" class="form-control" placeholder="http://example.com (optional)">
                         </div>
                         <span class="col-md-4"></span>
                         <span class="col-md-8">
