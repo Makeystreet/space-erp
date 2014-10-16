@@ -131,9 +131,10 @@ app.InventoryView = Backbone.View.extend({
             "bLengthChange": true,
             "aoColumnDefs": [
                 { "bVisible": false, "aTargets": [ -1 ] },
-                { "sWidth": "60%", "aTargets": [ 0 ] },
-                { "sWidth": "20%", "aTargets": [ 1 ] },
+                { "sWidth": "50%", "aTargets": [ 0 ] },
+                { "sWidth": "10%", "aTargets": [ 1 ] },
                 { "sWidth": "20%", "aTargets": [ 2 ] },
+                { "sWidth": "20%", "aTargets": [ 3 ] },
             ]
         });
 
@@ -174,6 +175,7 @@ app.InventoryView = Backbone.View.extend({
         this.getDataTable().fnAddData([
             model.get('part').name,
             model.get('quantity'),
+            model.get('owner'),
             this.row_actions_template(),
             model.get('id')
         ]);
@@ -201,7 +203,7 @@ app.InventoryView = Backbone.View.extend({
         var $parent_row = $target.parents('tr');
         var row_position = this.getDataTable().fnGetPosition($parent_row.get(0));
         var row_data = this.getDataTable().fnGetData(row_position);
-        var inventoryId = row_data[3];
+        var inventoryId = row_data[4];
         this.deleteInventory(inventoryId, row_position);
     },
 
@@ -242,6 +244,7 @@ app.InventoryView = Backbone.View.extend({
 
         var partResourceURI = "/api/v1/part/" + this.currentPart + "/";
         var quantity = this.$("#val_part_quant_v2").val();
+        var owner = this.$("#val_owner").val();
         var spaceResourceURI = "/api/v1/space/" + app.space_id + "/";
         var addedTime = "Now";
 
@@ -251,7 +254,8 @@ app.InventoryView = Backbone.View.extend({
             added_time: addedTime,
             part: partResourceURI,
             space: spaceResourceURI,
-            quantity: quantity
+            quantity: quantity,
+            owner: owner
         });
 
         var that = this;
@@ -264,6 +268,7 @@ app.InventoryView = Backbone.View.extend({
             },
             error: function(model, response, options) {
                 that.showInventoryAddMsg("Something went wrong. Please try again.");
+                that.$('#btn_submit_new_parts').button('reset');
             }
         });
     },
@@ -271,21 +276,23 @@ app.InventoryView = Backbone.View.extend({
     clearAddForm: function() {
         this.$('#val_part_name_v2').val('');
         this.$('#val_part_url_v2').val('');
+        this.$('#val_owner').val('');
         this.$("#val_part_quant_v2").val('1')
     },
 
     createPart: function(){
-        var new_part_name = this.$('#val_part_name_v2').val();
-        var new_part_url = this.$('#val_part_url_v2').val();
+        var part_name = this.$('#val_part_name_v2').val();
+        var part_url = this.$('#val_part_url_v2').val();
 
-        if (!new_part_name) {
+
+        if (!part_name) {
             this.showInventoryAddMsg("Please provide part name");
             return;
         }
 
         var part = new app.Part({
-            'name' : new_part_name,
-            // 'url' : new_part_url,
+            'name' : part_name,
+            'url' : part_url,
         });
 
         var that = this;

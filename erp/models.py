@@ -91,4 +91,4 @@ class Inventory(BaseModel):
 
     def save(self, *args, **kwargs):
         self.modified_time = timezone.now()
-        super(self.Inventory, self).save(*args, **kwargs)
+        super(Inventory, self).save(*args, **kwargs)

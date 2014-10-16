@@ -166,6 +166,7 @@ class InventoryResource(DefaultModelResource):
     part = fields.ForeignKey(PartResource, 'part', full=True)
     space = fields.ForeignKey(SpaceResource, 'space')
     quantity = fields.IntegerField(attribute='quantity')
+    owner = fields.CharField(attribute='owner', null=True, blank=True)
 
     class Meta(DefaultMeta):
         queryset = Inventory.objects.order_by('?')

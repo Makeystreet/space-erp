@@ -122,9 +122,13 @@
                         <div class="col-md-8">
                             <input type="text" id="val_part_name_v2" name="val_part_name_v2" class="form-control" placeholder="Enter Part Name" required="">
                         </div>
-                        <label class="col-md-4 control-label" for="val_part_url_v2">Quantity<span class="text-danger"></span></label>
+                        <label class="col-md-4 control-label" for="val_part_quant_v2">Quantity<span class="text-danger"></span></label>
                         <div class="col-md-8">
-                            <input type="number" id="val_part_quant_v2" name="val_part_url_v2" class="form-control" min="1" value="1">
+                            <input type="number" id="val_part_quant_v2" name="val_part_quant_v2" class="form-control" min="1" value="1">
+                        </div>
+                        <label class="col-md-4 control-label" for="val_owner">Owner</label>
+                        <div class="col-md-8">
+                            <input type="text" id="val_owner" name="val_owner" class="form-control" placeholder="Name and contact details of current owner (optional)">
                         </div>
                         <label class="col-md-4 control-label" for="val_part_url_v2">Part URL</label>
                         <div class="col-md-8">
@@ -159,8 +163,9 @@
                 <table id="inventory-table" class="table table-bordered table-condensed table-vcenter">
                     <thead>
                         <tr>
-                            <th>Tool</th>
+                            <th>Part</th>
                             <th class='text-center'>Quantity</th>
+                            <th class='text-center'>Owner</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -168,6 +173,7 @@
                         <tr>
                             <td>{{inventory.part.name}}</td>
                             <td class='text-center'>{{inventory.quantity}}</td>
+                            <td class='text-center'>{{inventory.owner}}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
