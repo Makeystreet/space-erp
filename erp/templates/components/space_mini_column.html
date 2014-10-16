@@ -1,0 +1,37 @@
+    <div class="widget">
+        <div class="widget-advanced widget-advanced-alt">
+            <!-- Widget Header -->
+            <div class="widget-header text-center themed-background-dark-flatie">
+                <h4 class="widget-content-light">
+                    {% if space.logo %}
+                    <a href="/space/{{space.id}}/">
+                    <div style="background-image: url('{{space.logo}}');" class="landscape-img"></div>
+                    </a>
+                    {% endif %}
+                    <a href="/space/{{space.id}}/" class="themed-color-flatie"><strong style="color: white;">{{space.name}}</strong></a><br>
+                </h4>
+            </div>
+            <div class="widget-main">
+                <div class="list-group remove-margin">
+                    {% if "members" in request.path %}
+                    <a href="/members/" class="list-group-item active">
+                    {% else %}
+                    <a href="/members/" class="list-group-item">
+                    {% endif %}
+                        <span class="pull-right"><strong class="no_members">{{space.no_members}}</strong></span>
+                        <h4 class="list-group-item-heading remove-margin"><i class="fa fa-users fa-fw"></i> Members</h4>
+                        <p class="list-group-item-text"></p>
+                    </a>
+                    {% if "inventory" in request.path %}
+                    <a href="/inventory/" class="list-group-item active">
+                    {% else %}
+                    <a href="/inventory/" class="list-group-item">
+                    {% endif %}
+                        <span class="pull-right"><strong class="no_inventory">{{space.total_inventory_count}}</strong></span>
+                        <h4 class="list-group-item-heading remove-margin"><i class="fa fa-briefcase fa-fw"></i> Tools Inventory</h4>
+                        <p class="list-group-item-text"></p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
