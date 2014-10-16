@@ -12,13 +12,9 @@ class BaseModel(models.Model):
         abstract = True
         app_label = 'erp'
 
-    def __save__(self, *args, **kwargs):
-        self.modified_time = timezone.now()
-        super(self.__class__, self).save(*args, **kwargs)
-
 
 class Space(BaseModel):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)  # null=True, blank=True)
     status = models.CharField(max_length=200, null=True, blank=True)
     phone = models.CharField(max_length=200, null=True, blank=True)
     city = models.CharField(max_length=200, null=True, blank=True)
@@ -44,7 +40,7 @@ class Space(BaseModel):
     admins = models.ManyToManyField(User, null=True, blank=True,
                                     related_name='space_admins')
     members = models.ManyToManyField(User, null=True, blank=True,
-                                     related_name='space_members')
+                                    related_name='space_members')
     inventory = models.ManyToManyField('Part', through='Inventory',
                                        related_name='space_inventory')
 
@@ -56,6 +52,10 @@ class Space(BaseModel):
 
     def pub_date(self):
         return self.added_time
+
+    def save(self, *args, **kwargs):
+        self.modified_time = timezone.now()
+        super(Space, self).save(*args, **kwargs)
 
 
 class Part(BaseModel):
@@ -72,6 +72,8 @@ class Part(BaseModel):
     def save(self, *args, **kwargs):
         if(self.url[:4] != "http"):
             self.url = "http://" + self.url
+
+        self.modified_time = timezone.now()
         super(Part, self).save(*args, **kwargs)
 
 
@@ -86,3 +88,7 @@ class Inventory(BaseModel):
 
     def __unicode__(self):
         return '(%s - %s - %s)' % (self.space, self.part, self.quantity)
+
+    def save(self, *args, **kwargs):
+        self.modified_time = timezone.now()
+        super(self.Inventory, self).save(*args, **kwargs)
