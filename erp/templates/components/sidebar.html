@@ -1,0 +1,30 @@
+<div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse">
+        <ul class="nav" id="side-menu">
+            <li>
+                <a href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+            </li>
+            <li>
+                {% if "members" in request.path %}
+                <a href="{% url 'space_members' %}" class="active">
+                {% else %}
+                <a href="{% url 'space_members' %}">
+                {% endif %}
+                    <i class="fa fa-users fa-fw"></i> Members
+                    <span class="pull-right"><strong class="no_members">{{space.no_members}}</strong></span>
+                </a>
+            </li>
+            <li>
+                {% if "inventory" in request.url %}
+                <a href="{% url 'space_inventory' %}" class="active">
+                {% else %}
+                <a href="{% url 'space_inventory' %}">
+                {% endif %}
+                    <i class="fa fa-briefcase fa-fw"></i> Tools Inventory
+                    <span class="pull-right"><strong class="no_inventory">{{space.no_inventory}}</strong></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /.sidebar-collapse -->
+</div>
