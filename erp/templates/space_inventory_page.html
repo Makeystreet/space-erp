@@ -8,8 +8,8 @@
 {% endblock%}
 
 {% block extra_js %}
-<!-- <script type="text/javascript" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script> -->
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
+<script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
 <script type="text/javascript">
         var cur_user_details = {{user_details|safe}};
 </script>
@@ -117,31 +117,7 @@
                 {% if is_space_admin %}
                 <div class="block-title"><h4>Edit Inventory</h4></div>
                 <div id="add-inventory">
-                    <div class="form-group" id="inventory-form">
-                        <span class="col-md-4">
-                        </span>
-                        <span class="col-md-8">
-                            <p><strong>Add inventory</strong></p>
-                        </span>
-                        <label class="col-md-4 control-label" for="part_name">Part Name</label>
-                            <div class="col-md-8">
-                                <input type="text" id="input_part_name" class="form-control typeahead" placeholder="Enter name of part">
-                            </div>
-                        <label class="col-md-4 control-label" for="part_quantity" >Quantity</label>
-                            <div class="col-md-8">
-                                <input type="number" id="input_part_quantity" class="form-control" min="1" value="1">
-                            </div>
-                        <div class="col-md-4"></div>
-                        <div class="col-md-8">
-                            <button id="btn-add-inventory" type="button" class="btn btn-sm btn-primary" data-loading-text="Adding...">
-                                <i class="fa fa-plus"></i> Add
-                            </button>
-                            <span id="inv-add-msg" style="padding-left: 20px;"></span>
-                        </div>
-                        <div class="clearfix">
-                        </div>
-                    </div>
-                    <div class="form-group" id="new_part_form" style="display: none">
+                    <div class="form-group" id="new_part_form">
                         <span class="col-md-4">
                         </span>
                         <span class="col-md-8">
@@ -162,9 +138,6 @@
                         </div>
                         <span class="col-md-4"></span>
                         <span class="col-md-8">
-                        <button id="btn_cancel_new_parts" type="button" class="btn btn-sm btn-warning">
-                            <i class="fa fa-times"></i> Cancel
-                        </button>
                         <button id="btn_submit_new_parts" type="button" class="btn btn-sm btn-primary" data-loading-text="Adding...">
                             <i class="fa fa-plus"></i> Add
                         </button>
@@ -199,13 +172,7 @@
                     <tbody>
                     {% for inventory in space.inventory_list %}
                         <tr>
-                            <td><a href="#" data-part-makey-count="{{inventory.part.makeys.count}}" class="part-pop-trigger" data-part-name="{{inventory.part.name}}">{{inventory.part.name}}</a></td>
-                            <td class='text-center'>{{inventory.quantity}}</td>
-                        </tr>
-                    {% endfor %}
-                    {% for inventory in space.new_inventory_list %}
-                        <tr>
-                            <td><a href="#" data-part-makey-count="{{inventory.part.makeys.count}}" class="part-pop-trigger" data-part-name="{{inventory.part.name}}">{{inventory.part.name}}</a></td>
+                            <td>{{inventory.part.name}}</td>
                             <td class='text-center'>{{inventory.quantity}}</td>
                         </tr>
                     {% endfor %}

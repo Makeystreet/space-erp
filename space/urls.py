@@ -15,5 +15,6 @@ urlpatterns = patterns('',
     url(r'^$', 'erp.views.space_page', name='space_home'),
     url(r'^members/', 'erp.views.space_members_page', name='space_members'),
     url(r'^inventory/', 'erp.views.space_inventory_page', name='space_inventory'),
+    url(r'^api/', include('erp.api_urls')),
 
 )

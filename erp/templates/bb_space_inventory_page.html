@@ -17,8 +17,6 @@ $('.part-pop-trigger').popover({
 });
 
 $(function(){
-    App.datatables();
-
     $('#inventory-table').dataTable({
         "aaSorting": [[0,'asc']],
         "aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -48,7 +46,7 @@ app.Space = Backbone.Tastypie.Model.extend({
     },
 });
 
-app.OldInventory = Backbone.Tastypie.Model.extend({
+app.Inventory = Backbone.Tastypie.Model.extend({
     urlRoot : '/api/v1/inventory/',
     idAttribute : 'id',
 
@@ -63,32 +61,8 @@ app.OldInventory = Backbone.Tastypie.Model.extend({
     },
 });
 
-app.NewInventory = Backbone.Tastypie.Model.extend({
-    urlRoot : '/api/v1/new_inventory/',
-    idAttribute : 'id',
-
-    url : function() {
-        if(this.get('resource_uri') != undefined) {
-            return this.get('resource_uri');
-        } else if(this.get('id') != undefined) {
-            return this.urlRoot + this.get('id') + "/";
-        } else {
-            return this.urlRoot;
-        }
-    },
-});
-
-app.OldInventoryList = Backbone.Tastypie.Collection.extend({
-    model : app.OldInventory,
-    urlRoot : '/api/v1/inventory/?limit=0&space='+app.space_id,
-
-    url : function() {
-        return this.urlRoot;
-    },
-});
-
-app.NewPart = Backbone.Tastypie.Model.extend({
-    urlRoot : '/api/v1/new_part/',
+app.Part = Backbone.Tastypie.Model.extend({
+    urlRoot : '/api/v1/part/',
     idAttribute : 'id',
 
     defaults : {
@@ -106,9 +80,9 @@ app.NewPart = Backbone.Tastypie.Model.extend({
     },
 });
 
-app.NewInventoryList = Backbone.Tastypie.Collection.extend({
-    model : app.NewInventory,
-    urlRoot : '/api/v1/new_inventory/?limit=0&space='+app.space_id,
+app.InventoryList = Backbone.Tastypie.Collection.extend({
+    model : app.Inventory,
+    urlRoot : '/api/v1/inventory/?limit=0&space='+app.space_id,
 
     url : function() {
         return this.urlRoot;
@@ -123,51 +97,14 @@ app.InventoryView = Backbone.View.extend({
     row_actions_delete_confirm_template: Handlebars.compile(this.$('#row-actions-delete-confirm-template').html()),
     initialize: function(){
 
-        this.oldInventoryList = new app.OldInventoryList();
-        this.newInventoryList = new app.NewInventoryList();
+        this.inventoryList = new app.InventoryList();
 
-        this.listenTo(this.oldInventoryList, 'reset', this.addOldInventory);
-        this.listenTo(this.newInventoryList, 'reset', this.addNewInventory);
+        this.listenTo(this.inventoryList, 'reset', this.addInventory);
 
         this.nukeStaticTable();
         this.initEditable();
 
-        this.oldInventoryList.fetch({reset: true});
-        this.newInventoryList.fetch({reset: true});
-
-        var products = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            remote: {
-                url: '/api/v1/product/search?q=%QUERY',
-                    filter: function(list) {
-                        return $.map(list.products, function(product) {
-                            return { name: product.name, id: product.id };
-                        });
-                    }
-            },
-            limit: 10
-        });
-        products.initialize();
-
-        this.$('#add-inventory .typeahead').typeahead({
-            hint: true,
-            highlight: true,
-            minLength: 1
-        },{
-            name: 'products',
-            displayKey: 'name',
-            source: products.ttAdapter(),
-            templates: {
-                empty: Handlebars.compile($('#tt-part-suggestion-empty-template').html()),
-                footer: Handlebars.compile($('#tt-part-suggestion-footer-template').html())
-            }
-        });
-
-        var that = this;
-        this.$('#add-inventory .typeahead').on("typeahead:selected", function(event, selected, dataset){
-            that.currentInventory = selected.id;
-        });
+        this.inventoryList.fetch({reset: true});
     },
 
     getDataTable: function() {
@@ -216,28 +153,14 @@ app.InventoryView = Backbone.View.extend({
         this.$table.delegate( ".row-delete-confirm-no", "click", function() {
             that.cancelRowDelete(this);
         });
-        this.$el.delegate( "#add-inventory #btn-add-inventory", "click", function() {
-            that.createOldInventory();
-        });
-        this.$el.delegate( "#add-inventory #btn_add_new_part", "click", function() {
-            that.showNewPartInventory();
-        });
-
-        this.$el.delegate( "#add-inventory #btn_cancel_new_parts", "click", function() {
-            that.hideNewPartInventory();
-        });
 
         this.$el.delegate( "#add-inventory #btn_submit_new_parts", "click", function() {
-            that.createNewInventory();
+            that.createInventory();
         });
 
     },
 
     showInventoryAddMsg: function(msg) {
-        this.$("#inv-add-msg").html(msg);
-    },
-
-    showNewInventoryAddMsg: function(msg) {
         this.$("#new-inv-add-msg").html(msg);
     },
 
@@ -247,72 +170,18 @@ app.InventoryView = Backbone.View.extend({
         this.$('#btn-add-inventory').button('reset');
     },
 
-    createOldInventory: function() {
-
-        this.showInventoryAddMsg("");
-
-        var partResourceURI = "/api/v1/product/" + this.currentInventory + "/";
-        var quantity = this.$("#input_part_quantity").val();
-        var spaceResourceURI = "/api/v1/space/" + app.space_id + "/";
-        var addedTime = "Now";
-
-        if(this.currentInventory === undefined) {
-            this.showInventoryAddMsg("Select a part");
-            return;
-        }
-
-        this.$('#btn-add-inventory').button('loading');
-
-        var inventory = new app.OldInventory({
-            added_time: addedTime,
-            part: partResourceURI,
-            space: spaceResourceURI,
-            quantity: quantity
-        });
-
-        var that = this;
-        inventory.save(null, {
-            success: function(model, response, options){
-                that.$('#btn-add-inventory').button('reset');
-                that.showInventoryAddMsg("Added");
-                // that.addInventoryRow(model, "old");
-                that.refreshTable();
-            },
-            error: function(model, response, options) {
-                that.showInventoryAddMsg("Something went wrong. Please make sure you are not adding the same part again.");
-            }
-        });
-
-        this.resetTypeAhead();
+    addInventoryRow: function(model) {
+        this.getDataTable().fnAddData([
+            model.get('part').name,
+            model.get('quantity'),
+            this.row_actions_template(),
+            model.get('id')
+        ]);
     },
 
-    addInventoryRow: function(model, inventoryType) {
-        if (inventoryType === "old") {
-            this.getDataTable().fnAddData([
-                model.get('part').name,
-                model.get('quantity'),
-                this.row_actions_template(),
-                "old_" + model.get('id')
-            ]);
-        } else if (inventoryType === "new") {
-            this.getDataTable().fnAddData([
-                model.get('part').name,
-                model.get('quantity'),
-                this.row_actions_template(),
-                "new_" + model.get('id')
-            ]);
-        }
-    },
-
-    addOldInventory: function() {
-        for(var i=0; i<this.oldInventoryList.models.length; ++i) {
-            this.addInventoryRow(this.oldInventoryList.models[i], "old");
-        }
-    },
-
-    addNewInventory: function() {
-        for(var i=0; i<this.newInventoryList.models.length; ++i) {
-            this.addInventoryRow(this.newInventoryList.models[i], "new");
+    addInventory: function() {
+        for(var i=0; i<this.inventoryList.models.length; ++i) {
+            this.addInventoryRow(this.inventoryList.models[i]);
         }
     },
 
@@ -320,7 +189,6 @@ app.InventoryView = Backbone.View.extend({
         var $target = $(el);
         var $parent_row = $target.parents('tr');
         var table_position = this.getDataTable().fnGetPosition($parent_row.get(0));
-        console.log(table_position);
     },
 
     showDeleteConfirmation: function(el) {
@@ -333,20 +201,13 @@ app.InventoryView = Backbone.View.extend({
         var $parent_row = $target.parents('tr');
         var row_position = this.getDataTable().fnGetPosition($parent_row.get(0));
         var row_data = this.getDataTable().fnGetData(row_position);
-        var inventoryType = row_data[3].slice(0,3);
-        var inventoryId = row_data[3].slice(4);
-        this.deleteInventory(inventoryId, inventoryType, row_position);
-        // this.getDataTable().fnDeleteRow(row_position);
+        var inventoryId = row_data[3];
+        this.deleteInventory(inventoryId, row_position);
     },
 
-    deleteInventory: function(inventoryId, inventoryType, row_position) {
+    deleteInventory: function(inventoryId, row_position) {
 
-        var inventory;
-
-        if(inventoryType === "old")
-            inventory = this.oldInventoryList.get(inventoryId);
-        else if(inventoryType === "new")
-            inventory = this.newInventoryList.get(inventoryId);
+        var inventory = this.inventoryList.get(inventoryId);
 
         var that = this;
         inventory.destroy({
@@ -363,45 +224,30 @@ app.InventoryView = Backbone.View.extend({
 
     refreshTable: function(e) {
         this.clearTable();
-        this.oldInventoryList.fetch({reset: true});
-        this.newInventoryList.fetch({reset: true});
+        this.inventoryList.fetch({reset: true});
     },
 
-    showNewPartInventory: function() {
-        this.$("#new_part_form").slideDown();
-        this.$('#new_part_name_v2').val('');
-        this.$('#new_part_url_v2').val('');
-        this.$("#val_part_name_v2").focus();
-        this.showInventoryAddMsg("");
-        this.resetTypeAhead();
-    },
-
-    hideNewPartInventory: function() {
-        this.$("#new_part_form").slideUp();
-        this.$("#input_part_name").focus();
-    },
-
-    createNewInventory: function() {
+    createInventory: function() {
 
         this.showInventoryAddMsg("");
-        this.createNewPart();
+        this.createPart();
     },
 
-    createNewInventoryStep2: function() {
+    createInventoryStep2: function() {
 
-        if(this.currentNewPart === undefined) {
-            this.showNewInventoryAddMsg("Something went wrong");
+        if(this.currentPart === undefined) {
+            this.showInventoryAddMsg("Something went wrong");
             return;
         }
 
-        var partResourceURI = "/api/v1/new_part/" + this.currentNewPart + "/";
+        var partResourceURI = "/api/v1/part/" + this.currentPart + "/";
         var quantity = this.$("#val_part_quant_v2").val();
         var spaceResourceURI = "/api/v1/space/" + app.space_id + "/";
         var addedTime = "Now";
 
         this.$('#btn_submit_new_parts').button('loading');
 
-        var inventory = new app.NewInventory({
+        var inventory = new app.Inventory({
             added_time: addedTime,
             part: partResourceURI,
             space: spaceResourceURI,
@@ -414,24 +260,30 @@ app.InventoryView = Backbone.View.extend({
                 that.$('#btn_submit_new_parts').button('reset');
                 that.showInventoryAddMsg("Added");
                 that.refreshTable();
-                that.hideNewPartInventory();
+                that.clearAddForm();
             },
             error: function(model, response, options) {
-                that.showNewInventoryAddMsg("Something went wrong. Please try again.");
+                that.showInventoryAddMsg("Something went wrong. Please try again.");
             }
         });
     },
 
-    createNewPart: function(){
+    clearAddForm: function() {
+        this.$('#val_part_name_v2').val('');
+        this.$('#val_part_url_v2').val('');
+        this.$("#val_part_quant_v2").val('1')
+    },
+
+    createPart: function(){
         var new_part_name = this.$('#val_part_name_v2').val();
         var new_part_url = this.$('#val_part_url_v2').val();
 
         if (!new_part_name || !new_part_url) {
-            this.showNewInventoryAddMsg("Invalid data. Please check and try again.");
+            this.showInventoryAddMsg("Invalid data. Please check and try again.");
             return;
         }
 
-        var part = new app.NewPart({
+        var part = new app.Part({
             'name' : new_part_name,
             'url' : new_part_url,
         });
@@ -439,13 +291,13 @@ app.InventoryView = Backbone.View.extend({
         var that = this;
         part.save(null, {
             success : function(model, response) {
-                that.currentNewPart = model.get('id');
-                that.createNewInventoryStep2();
+                that.currentPart = model.get('id');
+                that.createInventoryStep2();
             },
 
             error : function(model, response) {
-                that.showNewInventoryAddMsg("Something went wrong. Please try again.");
-                that.currentNewPart = undefined;
+                that.showInventoryAddMsg("Something went wrong. Please try again.");
+                that.currentPart = undefined;
             },
         });
     }
@@ -457,8 +309,6 @@ app.space.fetch();
 $(function(){
     app.inventoryView = new app.InventoryView();
 });
-// app.inventoryView = new app.InventoryView();
-
 
 {% endif %}
 
