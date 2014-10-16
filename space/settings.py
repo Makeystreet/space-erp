@@ -8,13 +8,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...) and
+# Absolute filesystem path to the Django project directory
 import os
-from os.path import abspath, basename, dirname, join, normpath
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-# Absolute filesystem path to the Django project directory:
-DJANGO_ROOT = dirname(dirname(abspath(__file__)))
+BASE_DIR = DJANGO_ROOT = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -74,8 +71,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'space',
-        'USER': 'nashraf',
-        'PASSWORD': '',
+        'USER': 'space',
+        'PASSWORD': 'space',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -103,5 +100,5 @@ STATIC_URL = '/assets/'
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/
 # staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
-    normpath(join(DJANGO_ROOT, 'assets')),
+    os.path.normpath(os.path.join(DJANGO_ROOT, 'assets')),
 )
