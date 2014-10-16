@@ -4,6 +4,7 @@
             <li>
                 <a href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
             </li>
+            {% comment %}
             <li>
                 {% if "members" in request.path %}
                 <a href="{% url 'space_members' %}" class="active">
@@ -14,6 +15,7 @@
                     <span class="pull-right"><strong class="no_members">{{space.no_members}}</strong></span>
                 </a>
             </li>
+            {% endcomment %}
             <li>
                 {% if "inventory" in request.url %}
                 <a href="{% url 'space_inventory' %}" class="active">
