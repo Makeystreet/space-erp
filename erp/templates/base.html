@@ -9,7 +9,6 @@
 
     <!-- Favicon -->
     {% load static from staticfiles %}
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
 
     <!-- CSS Styles -->
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
@@ -25,7 +24,7 @@
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-tagsinput.css' %}" rel="stylesheet">
 
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-glyphicons.css' %}" rel="stylesheet">
 
     <!-- JQUERY -->
     <script src="{% static 'js/jquery-1.10.1.min.js' %}"></script>
@@ -46,6 +45,28 @@
 
     <!-- backbone trackit for patch requests -->
     <script src="{% static 'js/backbone.trackit.min.js' %}"></script>
+
+    <!-- MetisMenu CSS -->
+    <link href="{% static 'css/plugins/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{% static 'js/plugins/metisMenu/metisMenu.min.js' %}"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static 'js/sb-admin-2.js' %}"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
 
     {% include "components/csrf_js.html" %}
@@ -73,37 +94,45 @@
 </head>
 
 <body>
-    {% include "components/navbar.html" %}
-    <div id="page-content">
-        <div class="container">
-            <div class="row"><div class="col-sm-12 col-md-12"></div></div>
-            <div class="row"><div class="col-sm-12 col-md-12"></div></div>
+    <div id="wrapper">
 
-            {% if messages %}
-                <div class="row">
-                    <div class="col-lg-offset-1 col-sm-10 col-md-10">
-                        {% for message in messages %}
-                            <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-warning">
-                                <center>
-                                    <button type="button" class="close" data-dismiss="alert">×</button>
-                                    {% autoescape off %}{{ message }}{% endautoescape %}
-                                </center>
+        {% include "components/navbar.html" %}
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    {% if messages %}
+                        <div class="row">
+                            <div class="col-lg-offset-1 col-sm-10 col-md-10">
+                                {% for message in messages %}
+                                    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-warning">
+                                        <center>
+                                            <button type="button" class="close" data-dismiss="alert">×</button>
+                                            {% autoescape off %}{{ message }}{% endautoescape %}
+                                        </center>
+                                    </div>
+                                {% endfor %}
                             </div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-
-            {% block content_top %} {% endblock %}
-            <div class="row" id="">
-                <div class="col-sm-12 col-md-12">
-                    {% block content_full %}
-                    {% endblock %}
-                </div>
+                <!-- /.col-lg-12 -->
             </div>
-            {% block content_bottom %} {% endblock %}
+            <!-- /.row -->
+
+            <div class="row">
+                <div class="col-lg-12">
+                    {% block content_full %} {% endblock %}
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
         </div>
+        <!-- /#page-wrapper -->
+
     </div>
+    <!-- /#wrapper -->
 
     <!-- dummy divs created to make sure that app.js dont throw errors -->
     <script>
