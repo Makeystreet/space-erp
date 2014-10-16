@@ -1,9 +1,13 @@
-from django.shortcuts import render
-from models import Space, Part, Inventory
-from django.contrib.auth.models import User
-from django.http import HttpResponse
-
 import json
+
+from django.core.urlresolvers import reverse
+from django.shortcuts import render
+from django.contrib import auth, messages
+from django.contrib.auth.models import User
+from django.http import HttpResponse, HttpResponseRedirect
+
+from models import Space, Inventory
+from forms import LoginForm
 
 
 def get_user_details_json(request):
@@ -84,3 +88,26 @@ def space_inventory_page(request):
         })
     else:
         return HttpResponse('404 - Space not configured')
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/')
+
+
+def login(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            user = auth.authenticate(username=username, password=password)
+            if user is not None:
+                auth.login(request, user)
+                return HttpResponseRedirect(reverse('space_inventory'))
+            else:
+                messages.error(request, 'Login Failed! Please try again.')
+        else:
+            messages.error(request, 'Please check the details entered!')
+    return render(request, 'login.html')

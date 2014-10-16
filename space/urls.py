@@ -10,6 +10,9 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
 
+    url(r'^login/$', 'erp.views.login', name='login'),
+    url(r'^logout/$', 'erp.views.logout', name='logout'),
+
 
     #Space main page
     url(r'^$', 'erp.views.space_page', name='space_home'),

@@ -8,10 +8,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...) and
+# Build paths inside the project like this: join(BASE_DIR, ...) and
 # Absolute filesystem path to the Django project directory
-import os
-BASE_DIR = DJANGO_ROOT = os.path.dirname(os.path.dirname(__file__))
+from os.path import dirname, normpath, join
+
+BASE_DIR = DJANGO_ROOT = dirname(dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -23,6 +24,36 @@ SECRET_KEY = 'ovhui^e$h%(=6@@=v)by^8v=j)^%_qvvh3!xl_8uq%y!3(ewi%'
 DEBUG = True
 
 TEMPLATE_DEBUG = True
+
+########## TEMPLATE CONFIGURATION
+# See: https://docs.djangoproject.com/en/dev/ref/
+# settings/#template-context-processors
+
+# TEMPLATE_CONTEXT_PROCESSORS = (
+#     'django.contrib.auth.context_processors.auth',
+#     'django.core.context_processors.debug',
+#     'django.core.context_processors.i18n',
+#     'django.core.context_processors.media',
+#     'django.core.context_processors.static',
+#     'django.core.context_processors.tz',
+#     'django.contrib.messages.context_processors.messages',
+#     'django.core.context_processors.request',
+#     # AllAuth context processors
+#     'allauth.account.context_processors.account',
+#     'allauth.socialaccount.context_processors.socialaccount',
+# )
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
+TEMPLATE_DIRS = (
+    normpath(join(DJANGO_ROOT, 'templates')),
+)
+########## END TEMPLATE CONFIGURATION
 
 ALLOWED_HOSTS = []
 
@@ -100,5 +131,5 @@ STATIC_URL = '/assets/'
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/
 # staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
-    os.path.normpath(os.path.join(DJANGO_ROOT, 'assets')),
+    normpath(join(DJANGO_ROOT, 'assets')),
 )
