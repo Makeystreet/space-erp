@@ -1,19 +1,24 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 
 class BaseModel(models.Model):
     added_time = models.DateTimeField('added time')
+    modified_time = models.DateTimeField('last modified time')
     is_enabled = models.BooleanField(default=True)
-    score = models.IntegerField(default=0)
 
     class Meta:
         abstract = True
         app_label = 'erp'
 
+    def __save__(self, *args, **kwargs):
+        self.modified_time = timezone.now()
+        super(self.__class__, self).save(*args, **kwargs)
+
 
 class Space(BaseModel):
-    name = models.CharField(max_length=200)  # null=True, blank=True)
+    name = models.CharField(max_length=200)
     status = models.CharField(max_length=200, null=True, blank=True)
     phone = models.CharField(max_length=200, null=True, blank=True)
     city = models.CharField(max_length=200, null=True, blank=True)
@@ -39,7 +44,7 @@ class Space(BaseModel):
     admins = models.ManyToManyField(User, null=True, blank=True,
                                     related_name='space_admins')
     members = models.ManyToManyField(User, null=True, blank=True,
-                                    related_name='space_members')
+                                     related_name='space_members')
     inventory = models.ManyToManyField('Part', through='Inventory',
                                        related_name='space_inventory')
 
