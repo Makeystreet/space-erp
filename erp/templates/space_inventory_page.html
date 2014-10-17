@@ -122,10 +122,12 @@
                       <div class="col-md-8">
                           <input type="text" id="val_owner" name="val_owner" class="form-control" placeholder="Name and contact details of current owner (optional)">
                       </div>
+                      {% comment %}
                       <label class="col-md-4 control-label" for="val_part_url_v2">Part URL</label>
                       <div class="col-md-8">
                           <input type="url" id="val_part_url_v2" name="val_part_url_v2" class="form-control" placeholder="http://example.com (optional)">
                       </div>
+                      {% endcomment %}
                       <span class="col-md-4"></span>
                       <span class="col-md-8">
                       <button id="btn_submit_new_parts" type="button" class="btn btn-sm btn-primary" data-loading-text="Adding...">
@@ -137,6 +139,47 @@
 
                       </div>
                   </div>
+                  <div class="modal fade" id="edit-inv-modal">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          <h4 class="modal-title">Edit Inventory</h4>
+                        </div>
+                        <div class="modal-body">
+                          <div class="form-group" id="edit_inv_form">
+                            {% comment %}
+                            <label class="col-md-4 control-label" for="edit_inv_name">Part Name<span class="text-danger">*</span></label>
+                            <div class="col-md-8">
+                                <input type="text" id="edit_inv_name" name="edit_inv_name" class="form-control" placeholder="Enter Part Name" required="">
+                            </div>
+                            <label class="col-md-4 control-label" for="edit_inv_quant">Quantity<span class="text-danger"></span></label>
+                            <div class="col-md-8">
+                                <input type="number" id="edit_inv_quant" name="edit_inv_quant" class="form-control" min="1" value="1">
+                            </div>
+                            <label class="col-md-4 control-label" for="edit_inv_url">Part URL</label>
+                            <div class="col-md-8">
+                                <input type="url" id="edit_inv_url" name="edit_inv_url" class="form-control" placeholder="http://example.com (optional)">
+                            </div>
+                            {% endcomment %}
+                            <label class="col-md-4 control-label" for="edit_inv_owner">Owner</label>
+                            <div class="col-md-8">
+                                <input type="text" id="edit_inv_owner" name="edit_inv_owner" class="form-control" placeholder="Name and contact details of current owner (optional)">
+                            </div>
+                            <input type="hidden" id="edit_inv_id" name="edit_inv_id">
+
+                            <div class="clearfix">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <span id="new-inv-edit-msg" style="padding-right: 20px;"></span>
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary" id="edit-inv-save-btn">Save</button>
+                        </div>
+                      </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
               </div>
                   <hr />
               {% else %}

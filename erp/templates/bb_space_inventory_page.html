@@ -142,8 +142,11 @@ app.InventoryView = Backbone.View.extend({
 
         // delegating row events
         var that = this;
-        this.$table.delegate( ".row-edit", "click", function() {
-            that.rowEdit(this);
+        this.$table.delegate( ".row-edit-transfer-owner", "click", function() {
+            that.showTransferOwnerForm(this);
+        });
+        this.$el.delegate( "#edit-inv-save-btn", "click", function() {
+            that.saveInventoryEdit(this);
         });
         this.$table.delegate( ".row-delete", "click", function() {
             that.showDeleteConfirmation(this);
@@ -185,12 +188,6 @@ app.InventoryView = Backbone.View.extend({
         for(var i=0; i<this.inventoryList.models.length; ++i) {
             this.addInventoryRow(this.inventoryList.models[i]);
         }
-    },
-
-    rowEdit: function(el) {
-        var $target = $(el);
-        var $parent_row = $target.parents('tr');
-        var table_position = this.getDataTable().fnGetPosition($parent_row.get(0));
     },
 
     showDeleteConfirmation: function(el) {
@@ -307,6 +304,38 @@ app.InventoryView = Backbone.View.extend({
                 that.currentPart = undefined;
             },
         });
+    },
+
+    showTransferOwnerForm: function(el) {
+        var $target = $(el);
+        var $parent_row = $target.parents('tr');
+        var row_position = this.getDataTable().fnGetPosition($parent_row.get(0));
+        var row_data = this.getDataTable().fnGetData(row_position);
+        this.$("#edit_inv_owner").val(row_data[2]);
+        this.$("#edit_inv_id").val(row_data[4]);
+        this.$("#edit-inv-modal").modal('show');
+    },
+
+    saveInventoryEdit: function() {
+        var owner = this.$("#edit_inv_owner").val();
+        var inv_id = this.$("#edit_inv_id").val();
+
+        var inv = new app.Inventory({id: inv_id});
+
+        var that = this;
+        inv.save({owner: owner}, {
+            patch: true,
+            success: function() {
+                that.$("#edit-inv-modal").modal('hide');
+                that.refreshTable();
+                that.clearEditForm();
+            }
+        })
+    },
+
+    clearEditForm: function() {
+        this.$("#edit_inv_owner").val('');
+        this.$("#edit_inv_id").val('');
     }
 });
 
