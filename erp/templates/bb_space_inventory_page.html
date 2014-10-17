@@ -275,14 +275,14 @@ app.InventoryView = Backbone.View.extend({
 
     clearAddForm: function() {
         this.$('#val_part_name_v2').val('');
-        this.$('#val_part_url_v2').val('');
+        // this.$('#val_part_url_v2').val('');
         this.$('#val_owner').val('');
         this.$("#val_part_quant_v2").val('1')
     },
 
     createPart: function(){
         var part_name = this.$('#val_part_name_v2').val();
-        var part_url = this.$('#val_part_url_v2').val();
+        // var part_url = this.$('#val_part_url_v2').val();
 
 
         if (!part_name) {
@@ -292,7 +292,7 @@ app.InventoryView = Backbone.View.extend({
 
         var part = new app.Part({
             'name' : part_name,
-            'url' : part_url,
+            // 'url' : part_url,
         });
 
         var that = this;

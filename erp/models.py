@@ -70,7 +70,7 @@ class Part(BaseModel):
         return self.name
 
     def save(self, *args, **kwargs):
-        if(self.url[:4] != "http"):
+        if(self.url and self.url[:4] != "http"):
             self.url = "http://" + self.url
 
         self.modified_time = timezone.now()
