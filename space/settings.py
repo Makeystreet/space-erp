@@ -133,3 +133,5 @@ STATIC_URL = '/assets/'
 STATICFILES_DIRS = (
     normpath(join(DJANGO_ROOT, 'assets')),
 )
+
+STATIC_ROOT = normpath(join(DJANGO_ROOT, 'assets'))
