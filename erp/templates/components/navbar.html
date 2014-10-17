@@ -13,7 +13,6 @@
     <!-- /.navbar-header -->
 
     <ul class="nav navbar-top-links navbar-right">
-        <li><a href="http://www.makeystreet.com" target="_blank"><i class="fa fa-bolt fa-fw"></i> Powered by Makeystreet</a></li>
         {% if user.is_authenticated %}
         <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
         {% else %}
