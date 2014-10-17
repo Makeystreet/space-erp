@@ -13,6 +13,7 @@
         var cur_user_details = {{user_details|safe}};
 </script>
 
+{% comment %}
 {% if not is_space_admin and space.latitude and space.longitude %}
 <style type="text/css">
     #space_location_map {
@@ -79,6 +80,7 @@
     });
 </script>
 {% endif %}
+{% endcomment %}
 {% endblock %}
 
 {% block templates %}
@@ -90,6 +92,7 @@
 {% endblock %}
 
 {% block content_full %}
+{% comment %}
 {% if not is_space_admin and space.latitude and space.longitude %}
 <div class="row">
     <div class="col-xs-12">
@@ -136,6 +139,7 @@
     </div>
 </div>
 {% endif %}
+{% endcomment %}
 <div class="row">
     <div class="col-xs-12">
         <div class="block">
